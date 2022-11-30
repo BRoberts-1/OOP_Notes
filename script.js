@@ -283,3 +283,52 @@ Person.hey(); //returns: Hey there!
 PersonCl.hey(); //this will now point to the entire class of PersonCl-because we put it as a static method in the class.
 
 // They are helper methods to implement on a class or constructor function.
+
+// Section 216 - Object.create
+
+// This is the least used way to implement prototypal inheritance in JS, but is necessary for true class inheritance.
+
+// It is the 3rd way to implement prototypal inheritance/delegation. When we use Object.create there are no prototype properties, constructor functions, or 'new' operators.
+
+// We use Object.create() to manually set the prototype of an object to any other object we choose by passing in that 'other' object as the argument.
+
+const PersonProto = {
+  //object literal to be our object prototype
+  calcAge() {
+    // our method we want to bequeath/bestor to other objects
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+// We create an instance of our object:
+
+const steven = Object.create(PersonProto); //we enter our object we want to inherit from
+
+console.log(steven); //returns and empty object with our calcAge method as an inheritance
+
+// We can fill the object manually with properties and values:
+steven.name = 'Steven';
+steven.birthYear = '2002';
+
+// Now that our object has data we can call our method on it:
+steven.calcAge(); //returns: 35
+
+// Now our prototype chain works as with other methods we used to implement prototypal inheritance. Here is proof of prototypal inheritance:
+
+console.log(steven.__proto__ === PersonProto); // true
+
+// To programmatically add properties to an empty object, we start with a new empty object:
+
+const sarah = Object.create(PersonProto);
+
+// we add a new function to our PersonProto object(see line 302) and then call it on our empty object:
+
+sarah.init('Sarah', 1979);
+sarah.calcAge();
+
+// This is no a constructor function, init(), because we don't use the 'new' operator when calling it.
