@@ -119,7 +119,25 @@ mercedes.accelerate();
 // Can use either a class expression or a class declaration(classes are just a type of function.)
 
 // a class expression
-const PersonCl = class {};
+// const PersonCl = class {};
 
 // a class declaration
-class PersonCl {}
+//1st step is to write constuctor function
+// include parameters for the properties you want object to contain
+// use 'new' keyword when creating a new person by calling constuctor function
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+
+  calcAge() {
+    // methods are stored on prototype property
+    console.log(2037 - this.birthYear);
+  }
+}
+
+// We can add methods below constructor functions. All the methods, we add to the class, will be stored on the prototype of the objects and not on the objects themselves.(ie prototypal inheritance)
+// we store our newly created object in a variable we can access:
+const jessica = new PersonCl('Jessica', 1996);
+console.log(jessica);
