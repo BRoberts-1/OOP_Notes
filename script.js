@@ -132,7 +132,7 @@ class PersonCl {
   }
 
   calcAge() {
-    // methods are stored on prototype property
+    // methods are stored on .prototype property
     console.log(2037 - this.birthYear);
   }
 }
@@ -141,3 +141,24 @@ class PersonCl {
 // we store our newly created object in a variable we can access:
 const jessica = new PersonCl('Jessica', 1996);
 console.log(jessica);
+
+jessica.calcAge(); //calling method on jessica object
+console.log(jessica.__proto__ === PersonCl.prototype); // returns: true
+
+// Can add a method manually outside of class to our prototype property to show it's the same thing:
+
+// We could also just put this method inside our class and it will work the same.
+
+PersonCl.prototype.greet = function () {
+  console.log(`Hey ${this.firstName}`);
+};
+jessica.greet(); //returns: Hey Jessica
+
+/* Important points about classes:
+1. Classes are NOT hoisted, not even class declarations(unlike function declarations).
+2. Classes, just like functions, are first-class(i.e. they can be passed and returned in functions as arguments).
+3. Classes are executed in 'strict mode' automatically, even if you don't active 'strict mode' for the rest of your code.
+
+// You can use either Classes or Constructor functions as long you understand protypes and prototypal inheritance. However, using Classes for syntax is cleaner and more easily readable because data and behavior is contained in one block. */
+
+// Section 214 - Setters and Getters
