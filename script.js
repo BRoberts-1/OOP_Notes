@@ -2,78 +2,78 @@
 
 // Section 208 - Constructor functions and 'new' operator
 
-const Person = function (firstName, birthYear) {
-  this.firstName = firstName;
-  this.birthYear = birthYear;
-};
+// const Person = function (firstName, birthYear) {
+//   this.firstName = firstName;
+//   this.birthYear = birthYear;
+// };
 
-const jonas = new Person('Jonas', 1991);
-console.log(jonas);
+// const jonas = new Person('Jonas', 1991);
+// console.log(jonas);
 
 // 1. New {} created
 // 2. function is called with new operator, this keyword is set to {}
 // 3. {} is linked to prototype
 // 4. function automatically returns {}
 
-const matilda = new Person('Matilda', 2017);
-const jack = new Person('Jack', 1975);
-console.log(matilda, jack); // returns: new objects with above properties and values
+// const matilda = new Person('Matilda', 2017);
+// const jack = new Person('Jack', 1975);
+// console.log(matilda, jack); // returns: new objects with above properties and values
 
 // Section 209 - Prototypes
 
-console.log(Person.prototype); // returns: constructor object
+// console.log(Person.prototype); // returns: constructor object
 
 // To create a method to be inherited by all objects created by our constructor:
-Person.prototype.calcAge = function () {
-  console.log(2037 - this.birthYear);
-};
+// Person.prototype.calcAge = function () {
+//   console.log(2037 - this.birthYear);
+// };
 
-jonas.calcAge(); // can now call this method on our jonas object
-matilda.calcAge();
+// jonas.calcAge(); // can now call this method on our jonas object
+// matilda.calcAge();
 
-console.log(jonas.__proto__); // returns: our prototype object created bt our constructor function used to create jonas
-console.log(jonas.__proto__ === Person.prototype); // returns: true
-// also to prove where it is from:
-console.log(Person.prototype.isPrototypeOf(jonas)); // returns: true
-console.log(Person.prototype.isPrototypeOf(Person)); // returns: false
+// console.log(jonas.__proto__); // returns: our prototype object created bt our constructor function used to create jonas
+// console.log(jonas.__proto__ === Person.prototype); // returns: true
+// // also to prove where it is from:
+// console.log(Person.prototype.isPrototypeOf(jonas)); // returns: true
+// console.log(Person.prototype.isPrototypeOf(Person)); // returns: false
 
-// Section 210 - Prototypal Inheritance and the Prototype Chain
+// // Section 210 - Prototypal Inheritance and the Prototype Chain
 
-// Can also attach properties to be inherited by created objects of our constructor eg:
+// // Can also attach properties to be inherited by created objects of our constructor eg:
 
-Person.prototype.species = 'Homosapiens';
-console.log(jonas, matilda); // can see this new property as an inherited property, not ON the objects themselves when created, but as part of the prototype they inherited.
+// Person.prototype.species = 'Homosapiens';
+// console.log(jonas, matilda); // can see this new property as an inherited property, not ON the objects themselves when created, but as part of the prototype they inherited.
 // Can check if a property is inherited or is on the object itself:
-console.log(jonas.hasOwnProperty('firstname')); //returns: true
-console.log(jonas.hasOwnProperty('species')); //returns: false
+// console.log(jonas.hasOwnProperty('firstname')); //returns: true
+// console.log(jonas.hasOwnProperty('species')); //returns: false
 
 // End of Section 210 and Start of Section 211-Prototypal Inheritance on Built-In Objects
-console.log(jonas.__proto__);
-console.log(jonas.__proto__.__proto__); //returns: Object.prototype
-console.log(jonas.__proto__.__proto__.__proto__); //returns: null
+// console.log(jonas.__proto__);
+// console.log(jonas.__proto__.__proto__); //returns: Object.prototype
+// console.log(jonas.__proto__.__proto__.__proto__); //returns: null
 
-console.log(Person.prototype.constructor); //returns: function itself
+// console.log(Person.prototype.constructor); //returns: function itself
 
-// To inspect the above must use console.dir
-console.dir(Person.prototype.constructor);
+// // To inspect the above must use console.dir
+// console.dir(Person.prototype.constructor);
 
-const arr = [3, 6, 4, 5, 6, 9, 3];
-console.log(arr.__proto__); //returns: array.prototype with all the various methods available for arrays in JS
-console.log(arr.__proto__ === Array.prototype); //returns: true
+// const arr = [3, 6, 4, 5, 6, 9, 3];
+// console.log(arr.__proto__); //returns: array.prototype with all the various methods available for arrays in JS
+// console.log(arr.__proto__ === Array.prototype); //returns: true
 
-console.log(arr.__proto__.__proto__); //returns: Object.prototype because the prototype itself is an object.
-// All this is a way for us to reuse code over and over again
+// console.log(arr.__proto__.__proto__); //returns: Object.prototype because the prototype itself is an object.
+// // All this is a way for us to reuse code over and over again
 
-// To extend the prototype methods-do not do this in practice:
-Array.prototype.unique = function () {
-  return [...new Set(this)];
-};
+// // To extend the prototype methods-do not do this in practice:
+// Array.prototype.unique = function () {
+//   return [...new Set(this)];
+// };
 
-console.log(arr.unique()); //returns: [3, 6, 5, 9]
+// console.log(arr.unique()); //returns: [3, 6, 5, 9]
 
-//Prototypal inheritance also applie to HTML elements
-const h1 = document.querySelector('h1');
-console.dir(document.querySelector('h1')); //returns: document object with various properties including prototype object and if you keep opening nested you will find ElementPrototype object
+// //Prototypal inheritance also applie to HTML elements
+// const h1 = document.querySelector('h1');
+// console.dir(document.querySelector('h1')); //returns: document object with various properties including prototype object and if you keep opening nested you will find ElementPrototype object
 
 // Section 212 - Coding Challenge #1
 
@@ -204,7 +204,7 @@ class PersonCl {
     this.fullName = fullName;
     this.birthYear = birthYear;
   }
-
+  // Instance methods
   calcAge() {
     // methods are stored on .prototype property
     console.log(2037 - this.birthYear);
@@ -226,6 +226,11 @@ class PersonCl {
   get fullName() {
     return this._fullName;
   }
+  // Static method
+  static hey() {
+    console.log('Hey there!');
+    console.log(this);
+  }
 }
 
 const jessica = new PersonCl('Jessica Davis', 1996);
@@ -243,3 +248,38 @@ console.log(jessica);
 // const walter = new PersonCl('Walter', 1965); //returns: alert "Walter is not a full name!"
 
 const walter = new PersonCl('Walter White', 1965); //returns: Walter White
+
+// We use setters and getters with classes. Above is case where we want to validate the data as we create the object.
+
+// Section 215 - Static Methods
+
+// We can use Array.from() to convert an array-like structure to a real array.
+Array.from(document.querySelectorAll('h1'));
+// Array.from is a simple function that is attached only the to Array constructor and not to the prototype property. You cannot call this method on any object, only as Array.from
+
+// The .from() method is in the Array namespace e.g. Number.parsefloat() is another example of a method in a namespace
+
+// We use these as helpers that should be related to a certain constructor eg:
+// To implement a static method for a constructor function:
+
+// Here is our constructor:
+const Person = function (firstName, birthYear) {
+  // Instance properties
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+
+Person.hey = function () {
+  console.log('Hey there 🤞!');
+  console.log(this);
+};
+
+// Whatever object is calling the method will be the this keyword inside of the function. Here the this keyword is the entire 'Person' constructor function.
+
+Person.hey(); //returns: Hey there!
+// jonas.hey(); // returns; jonas is not defined because there is no prototypal inheritance of the .hey() method in jonas object.
+
+// Static methods don't need an instance of a class to be created before they are called. Instance methods do need an instance before they can be called.
+PersonCl.hey(); //this will now point to the entire class of PersonCl-because we put it as a static method in the class.
+
+// They are helper methods to implement on a class or constructor function.
