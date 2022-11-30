@@ -125,34 +125,41 @@ mercedes.accelerate();
 //1st step is to write constuctor function
 // include parameters for the properties you want object to contain
 // use 'new' keyword when creating a new person by calling constuctor function
-class PersonCl {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
-    this.birthYear = birthYear;
-  }
+// class PersonCl {
+//   constructor(firstName, birthYear) {
+//     this.firstName = firstName;
+//     this.birthYear = birthYear;
+//   }
 
-  calcAge() {
-    // methods are stored on .prototype property
-    console.log(2037 - this.birthYear);
-  }
-}
+//   calcAge() {
+//     // methods are stored on .prototype property
+//     console.log(2037 - this.birthYear);
+//   }
+
+//   get age() {
+//     // to demo getter in our class
+//     return 2037 - this.birthYear;
+//   }
+// }
 
 // We can add methods below constructor functions. All the methods, we add to the class, will be stored on the prototype of the objects and not on the objects themselves.(ie prototypal inheritance)
 // we store our newly created object in a variable we can access:
-const jessica = new PersonCl('Jessica', 1996);
-console.log(jessica);
+// const jessica = new PersonCl('Jessica', 1996);
+// console.log(jessica);
 
-jessica.calcAge(); //calling method on jessica object
-console.log(jessica.__proto__ === PersonCl.prototype); // returns: true
+// console.log(jessica.age); // our getter property asseses 41
 
-// Can add a method manually outside of class to our prototype property to show it's the same thing:
+// jessica.calcAge(); //calling method on jessica object
+// console.log(jessica.__proto__ === PersonCl.prototype); // returns: true
 
-// We could also just put this method inside our class and it will work the same.
+// // Can add a method manually outside of class to our prototype property to show it's the same thing:
 
-PersonCl.prototype.greet = function () {
-  console.log(`Hey ${this.firstName}`);
-};
-jessica.greet(); //returns: Hey Jessica
+// // We could also just put this method inside our class and it will work the same.
+
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.firstName}`);
+// };
+// jessica.greet(); //returns: Hey Jessica
 
 /* Important points about classes:
 1. Classes are NOT hoisted, not even class declarations(unlike function declarations).
@@ -162,3 +169,77 @@ jessica.greet(); //returns: Hey Jessica
 // You can use either Classes or Constructor functions as long you understand protypes and prototypal inheritance. However, using Classes for syntax is cleaner and more easily readable because data and behavior is contained in one block. */
 
 // Section 214 - Setters and Getters
+
+// Every object in JS has Setters and Getters as properties.
+
+// They are called 'assesor properties', while normal properties are called 'data properties'.
+
+// They are functions that Get and Set a value.
+
+const account = {
+  owner: 'Jonas',
+  movements: [200, 530, 120, 300],
+
+  get latest() {
+    // must include 'get' keyword before our function
+    return this.movements.slice(-1).pop();
+  },
+
+  set latest(mov) {
+    // Any setter has exactly 1 parameter
+    this.movements.push(mov);
+  },
+};
+
+console.log(account.latest); //returns 300, notice that we don't call the method/function with () because it is a property that assesses a value.(i.e assessor property)
+
+// To call 'setter' property assessor
+account.latest = 50; // notice syntax is just like property we set to a value
+console.log(account.movements); //returns: Array(5) [200, 530, 120, 300, 50]
+
+// To use a setter to validate data: eg to check to see if value is a fullname(ie a firstname, a space character " ", a lastname)
+
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  calcAge() {
+    // methods are stored on .prototype property
+    console.log(2037 - this.birthYear);
+  }
+
+  get age() {
+    // to demo getter in our class
+    return 2037 - this.birthYear;
+  }
+
+  // Setting a property that already exists,  we need a getter as well.
+
+  set fullName(name) {
+    console.log(name);
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  } // if name includes a space we set fullName = name, else alert
+
+  get fullName() {
+    return this._fullName;
+  }
+}
+
+const jessica = new PersonCl('Jessica Davis', 1996);
+console.log(jessica);
+
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.firstName}`);
+// };
+// jessica.greet(); //returns: Hey Jessica
+
+// the setter function above is called when the fullname is set by the constructor function which is then checked by the setter which is then set again and then called again to check etc. This produces an error of 'too much recursion' b/c you are continuing to set, call and check, and then set again.
+
+// We then need to create a getter function to create the property of fullName because it is undefined eg. see above on line 226. This will then give us both the property of _fullName: "Jessica Davis" and the  property of fullName: "Jessica Davis"
+
+// const walter = new PersonCl('Walter', 1965); //returns: alert "Walter is not a full name!"
+
+const walter = new PersonCl('Walter White', 1965); //returns: Walter White
