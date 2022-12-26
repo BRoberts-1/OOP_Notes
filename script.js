@@ -263,24 +263,24 @@ Array.from(document.querySelectorAll('h1'));
 // To implement a static method for a constructor function:
 
 // Here is our constructor:
-const Person = function (firstName, birthYear) {
-  // Instance properties
-  this.firstName = firstName;
-  this.birthYear = birthYear;
-};
+// const Person = function (firstName, birthYear) {
+//   // Instance properties
+//   this.firstName = firstName;
+//   this.birthYear = birthYear;
+// };
 
-Person.hey = function () {
-  console.log('Hey there 🤞!');
-  console.log(this);
-};
+// Person.hey = function () {
+//   console.log('Hey there 🤞!');
+//   console.log(this);
+// };
 
-// Whatever object is calling the method will be the this keyword inside of the function. Here the this keyword is the entire 'Person' constructor function.
+// // Whatever object is calling the method will be the this keyword inside of the function. Here the this keyword is the entire 'Person' constructor function.
 
-Person.hey(); //returns: Hey there!
-// jonas.hey(); // returns; jonas is not defined because there is no prototypal inheritance of the .hey() method in jonas object.
+// Person.hey(); //returns: Hey there!
+// // jonas.hey(); // returns; jonas is not defined because there is no prototypal inheritance of the .hey() method in jonas object.
 
-// Static methods don't need an instance of a class to be created before they are called. Instance methods do need an instance before they can be called.
-PersonCl.hey(); //this will now point to the entire class of PersonCl-because we put it as a static method in the class.
+// // Static methods don't need an instance of a class to be created before they are called. Instance methods do need an instance before they can be called.
+// PersonCl.hey(); //this will now point to the entire class of PersonCl-because we put it as a static method in the class.
 
 // They are helper methods to implement on a class or constructor function.
 
@@ -377,3 +377,66 @@ ford.accelerate();
 ford.brake();
 ford.speedUS = 50;
 console.log(ford); // returns: object with {make: 'Ford', speed: 80}
+
+// Section 218 - Inheritance Between "Classes": Constuctor Functions
+
+// So far we have practiced prototypal inheritance from a prototype and instances or from an object, but now we will see real inheritance(in classic OOP) between classes.
+// Although real classes do not exist in JS.
+
+// We will create a Person class(the Parent class) and have the Student class inherit from the Person class. A student is a subtype of a person. A student IS a person, but just a more specific type of person.
+// The idea is the student can have its own specific methods that are particular to a studen, but it inherits the general methods from its parent class ie Person class.
+
+// This will be done first with Constructor functions:
+// We start with our Person constructor
+const Person = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+// We then have our Person method
+Person.prototype.calcAge = function () {
+  console.log(2037 - this.birthYear);
+};
+
+const Student = function (firstName, birthYear, course) {
+  // parameters here are usually same as Parent's and then add more(here we add course)
+  Person.call(this, firstName, birthYear); // we use the .call() method to set our prototype equal to the Person prototype using 'this' keyword as an argument to do so.
+  this.course = course;
+};
+
+// To link the Student prototype with the Person prototype we will use Object.create(). This allows us to manually set our prototype property. Our Student object will then inherit from the Person object. But Object.create() creates an empty object so we must fill it.
+// It does not work to say Student.prototype = Person.prototype because this just points our student to the same object as the parent and doesn't allow for inheritance. It would just be the same object.
+
+// Linking prototypes:
+Student.prototype = Object.create(Person.prototype);
+
+// We then have our student constructor with the introduce method:
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+// We create ann instand of
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce();
+mike.calcAge(); //returns: 17. This works because JS looks up the calcAge property through the prototype chain until it finds it in the Person prototype.
+console.log(mike.__proto__); //returns: Object with .introduce() method
+console.log(mike.__proto__.__proto__); // returns: Object with .calcAge() method. It is the prototype of the prototype.
+
+console.log(mike instanceof Student); //returns: true
+console.log(mike instanceof Person); // returns: true b/c we linked Student to Person for inheritance
+console.log(mike instanceof Object); // returns: true b/c Object is also in the prototype chain
+
+// console.dir(Student.prototype.constructor); //returns: object set to Person, and we want it to be set to student. To accomplish this we just write:
+Student.prototype.constructor = Student;
+console.dir(Student.prototype.constructor);
+
+// Section 219 - Coding Challenge #3
+///////////////////////////////////////
+
+/* 
+1. Use a constructor function to implement an Electric Car (called EV) as a CHILD "class" of Car. Besides a make and current speed, the EV also has the current battery charge in % ('charge' property);
+2. Implement a 'chargeBattery' method which takes an argument 'chargeTo' and sets the battery charge to 'chargeTo';
+3. Implement an 'accelerate' method that will increase the car's speed by 20, and decrease the charge by 1%. Then log a message like this: 'Tesla going at 140 km/h, with a charge of 22%';
+4. Create an electric car object and experiment with calling 'accelerate', 'brake' and 'chargeBattery' (charge to 90%). Notice what happens when you 'accelerate'! HINT: Review the definiton of polymorphism 😉
+DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
+GOOD LUCK 😀
+*/
