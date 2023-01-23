@@ -86,31 +86,31 @@
 DATA CAR 1: 'BMW' going at 120 km/h
 DATA CAR 2: 'Mercedes' going at 95 km/h */
 
-const Car = function (make, speed) {
-  this.make = make;
-  this.speed = speed;
-};
+// const Car = function (make, speed) {
+//   this.make = make;
+//   this.speed = speed;
+// };
 
-Car.prototype.accelerate = function () {
-  this.speed += 10;
-  console.log(this.speed);
-};
+// Car.prototype.accelerate = function () {
+//   this.speed += 10;
+//   console.log(this.speed);
+// };
 
-Car.prototype.brake = function () {
-  this.speed -= 5;
-  console.log(this.speed);
-};
+// Car.prototype.brake = function () {
+//   this.speed -= 5;
+//   console.log(this.speed);
+// };
 
-const bmw = new Car('BMW', 120);
-const mercedes = new Car('Mercedes', 95);
+// const bmw = new Car('BMW', 120);
+// const mercedes = new Car('Mercedes', 95);
 
-console.log(bmw);
-console.log(mercedes);
+// console.log(bmw);
+// console.log(mercedes);
 
-bmw.accelerate();
-bmw.brake();
-mercedes.brake();
-mercedes.accelerate();
+// bmw.accelerate();
+// bmw.brake();
+// mercedes.brake();
+// mercedes.accelerate();
 
 // Section 213 - ES6 Classes
 
@@ -440,3 +440,114 @@ console.dir(Student.prototype.constructor);
 DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
 GOOD LUCK 😀
 */
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  this.speed += 10;
+  console.log(this.speed);
+};
+
+Car.prototype.brake = function () {
+  this.speed -= 5;
+  console.log(`${this.make} is going at ${this.speed}km/h`);
+};
+
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
+};
+
+// To link the prototypes
+EV.prototype = Object.create(Car.prototype);
+
+EV.prototype.chargeBattery = function (chargeTo) {
+  this.charge = chargeTo;
+};
+
+EV.prototype.accelerate = function () {
+  this.speed += 20;
+  this.charge--;
+  console.log(
+    `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
+  );
+}; // this accelerate function will override parent accelerate function, so child overrides parent. this is polymorphism
+
+const tesla = new EV('Tesla', 120, 23);
+tesla.chargeBattery(90);
+console.log(tesla); // can see in console the methods we now have linked together: chargeBattery prototype chargeTo and 'accelerate' and 'brake' in prototype of the prototype
+tesla.brake();
+tesla.accelerate();
+
+////////////////////////////
+// Section 220 - Inheritance between 'classes', ES6 Classes
+
+class PersonCL {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  // Instance methods
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+
+  greet() {
+    console.log(`Hey ${this.fullName}`);
+  }
+
+  get age() {
+    return 2037 - this.birthYear;
+  }
+
+  set fullName(name) {
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
+
+  // Static method
+  static hey() {
+    console.log('Hey there');
+  }
+}
+
+// We use the 'extends' keyword to cause the StudentCL class to inherit from the PersonCL class
+// also 'super' keyword calls the constructor function of the parent class
+class StudentCL extends PersonCL {
+  constructor(fullName, birthYear, course) {
+    // This super call needs to always happen first because it creates the 'this' keyword in this subclass
+    super(fullName, birthYear);
+    this.course = course;
+  }
+
+  introduce() {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+  }
+
+  // this calcAge() method will 'override' or 'shadow' the parent method
+  calcAge() {
+    `I'm ${
+      2037 - this.birthYear
+    } years old, but as a student I feel more like ${
+      2037 - this.birthYear + 20
+    }`;
+  }
+}
+
+// If you don't need any new properties, then you don't need to bother writing a constructor method in the child class because everything is already inherited from parent calass
+
+// const martha = new StudentCL('Martha Jones', 2012);
+const martha = new StudentCL('Martha Jones', 2012, 'Computer Science');
+martha.introduce();
+martha.calcAge();
+
+/////////////////
+// Section 221 - Inheritance Between 'Classes'-Object.create
