@@ -551,3 +551,40 @@ martha.calcAge();
 
 /////////////////
 // Section 221 - Inheritance Between 'Classes'-Object.create
+
+const PersonProto = {
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstname = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+
+// We will make 'student' inherit directly from 'person' prototype.
+// creating 'student' prototype as an empty object with name as 'PersonProto'
+const StudentProto = Object.create(PersonProto);
+// init method to make it easier to create students
+StudentProto.init = function (firstName, birthYear, course) {
+  PersonProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+const jay = Object.create(StudentProto);
+jay.init('Jay', 2010, 'Computer Science');
+jay.introduce();
+jay.calcAge();
+// StudentProto is the prototype of the jay object and PersonProto is the prototype of StudentProto
+// PersonProto is a parent prototype of jay ie it is in the prototype chain of jay
+// So, starts with PersonProto as parent, and then StudentProto as child, and then jay object inherits from StudentProt which inherits from parent-PersonProto-this is the prototype chain.
+
+// With Object.create() we are linking classes together through a prototype chain. We are dealing just with objects (just linking objects together)here and not constructor functions and not fake classe ES6.
+
+// In real job ES6 classes and constructor functions are more used, but need to know all three ways, as you will see all three ways.
+
+/////////////////////////
+// Section 222 - Another Class Example
