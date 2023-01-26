@@ -596,20 +596,36 @@ class Account {
   constructor(owner, currency, pin) {
     this.owner = owner;
     this.currency = currency;
-    this.pin = pin;
+    this._pin = pin;
     // we can add any property or inputs we want without basing it on anything else e.g.:
-    this.movements = [];
+    // Protected property has an underscore in front as a convention
+    this._movements = [];
     this.locale = navigator.language;
     // can execute any code we want in this constructor function eg;
     console.log(`Thanks for opening an account, ${owner}`);
   }
   // These methods are our Public interface to our object API
+  getMovements() {
+    return this._movements;
+  }
+
   deposit(value) {
-    this.movements.push(value);
+    this._movements.push(value);
   }
 
   withdrawal(value) {
     this.deposit(-value); // we are calling the method deposit() inside another method
+  }
+
+  _approveLoan(value) {
+    return true;
+  }
+
+  requestLoan(value) {
+    if (this.approveLoan(value)) {
+      this.deposit(value);
+      console.log(`Loan approved.`);
+    }
   }
 }
 
@@ -624,7 +640,28 @@ console.log(acc1);
 // However, it is better not to do this, and instead, create methods inside the constructor to call- see above deposit() and withdrawal() methods like so:
 acc1.deposit(250);
 acc1.withdrawal(140); // we abstracted away the negative above
+acc1.requestLoan(1000);
+acc1.approveLoan(1000);
+
 console.log(acc1);
+console.log(acc1.pin);
 
 // So the methods deposit() and withdrawal() are an interface to our objects aka API
 // Certain methods and data should not be accessable outside the object, as it can create bugs so we need protected properties aka encapsulation.
+
+// Section 223 - Encapsulation: Protected Properties and Methods
+
+// Encapsulation means keeping some of the properties and methods inaccessible outside the class and the rest of the methods will be exposed/accessible outside the class and are called API. This is very important to do in any production application.
+
+// Helps prevent code from outside the class from accidentally manipulating any data inside the class.
+// When we expose only a small interface(ie small API consisting of a few public methods), then we can change all internal methods with more confidence, knowing that the internal does not rely on the external code and will not break when internal changes are made.
+
+// JS classes do not yet support real data privacy and encapsulation. We will fake it using a convention.
+
+// We will protect the 'movements' data as it is mission critical data by using the convention of an underscore _movements before it. As you can see, it is not truely private, but at least everyone, including yourself, will know not to touch this property outside of the class.
+
+// We can access it using a public method, however. In production often times a method will be called getMovements, when in actuality, it is not really a 'getter' function. See the method getMovements() above. This allows everyone to get the movements without the ability to override them.
+console.log(acc1.getMovements()); // this allows to get without setting ie overriding them, unless they use acc1._movements. to access the property.
+
+// We should also make protected the pin number, so this._pin = pin
+// And also protect the approveLoan() method. See above _approveLoan
