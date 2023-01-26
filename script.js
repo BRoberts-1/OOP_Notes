@@ -292,44 +292,44 @@ Array.from(document.querySelectorAll('h1'));
 
 // We use Object.create() to manually set the prototype of an object to any other object we choose by passing in that 'other' object as the argument.
 
-const PersonProto = {
-  //object literal to be our object prototype
-  calcAge() {
-    // our method we want to bequeath/bestor to other objects
-    console.log(2037 - this.birthYear);
-  },
+// const PersonProto = {
+//   //object literal to be our object prototype
+//   calcAge() {
+//     // our method we want to bequeath/bestor to other objects
+//     console.log(2037 - this.birthYear);
+//   },
 
-  init(firstName, birthYear) {
-    this.firstName = firstName;
-    this.birthYear = birthYear;
-  },
-};
+//   init(firstName, birthYear) {
+//     this.firstName = firstName;
+//     this.birthYear = birthYear;
+//   },
+// };
 
-// We create an instance of our object:
+// // We create an instance of our object:
 
-const steven = Object.create(PersonProto); //we enter our object we want to inherit from
+// const steven = Object.create(PersonProto); //we enter our object we want to inherit from
 
-console.log(steven); //returns and empty object with our calcAge method as an inheritance
+// console.log(steven); //returns and empty object with our calcAge method as an inheritance
 
-// We can fill the object manually with properties and values:
-steven.name = 'Steven';
-steven.birthYear = '2002';
+// // We can fill the object manually with properties and values:
+// steven.name = 'Steven';
+// steven.birthYear = '2002';
 
-// Now that our object has data we can call our method on it:
-steven.calcAge(); //returns: 35
+// // Now that our object has data we can call our method on it:
+// steven.calcAge(); //returns: 35
 
-// Now our prototype chain works as with other methods we used to implement prototypal inheritance. Here is proof of prototypal inheritance:
+// // Now our prototype chain works as with other methods we used to implement prototypal inheritance. Here is proof of prototypal inheritance:
 
-console.log(steven.__proto__ === PersonProto); // true
+// console.log(steven.__proto__ === PersonProto); // true
 
-// To programmatically add properties to an empty object, we start with a new empty object:
+// // To programmatically add properties to an empty object, we start with a new empty object:
 
-const sarah = Object.create(PersonProto);
+// const sarah = Object.create(PersonProto);
 
-// we add a new function to our PersonProto object(see line 302) and then call it on our empty object:
+// // we add a new function to our PersonProto object(see line 302) and then call it on our empty object:
 
-sarah.init('Sarah', 1979);
-sarah.calcAge();
+// sarah.init('Sarah', 1979);
+// sarah.calcAge();
 
 // This is no a constructor function, init(), because we don't use the 'new' operator when calling it.
 
@@ -529,7 +529,7 @@ class StudentCL extends PersonCL {
   }
 
   introduce() {
-    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
   }
 
   // this calcAge() method will 'override' or 'shadow' the parent method
@@ -558,8 +558,12 @@ const PersonProto = {
   },
 
   init(firstName, birthYear) {
-    this.firstname = firstName;
+    this.firstName = firstName;
     this.birthYear = birthYear;
+  },
+
+  introduce() {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
   },
 };
 
@@ -588,3 +592,39 @@ jay.calcAge();
 
 /////////////////////////
 // Section 222 - Another Class Example
+class Account {
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.pin = pin;
+    // we can add any property or inputs we want without basing it on anything else e.g.:
+    this.movements = [];
+    this.locale = navigator.language;
+    // can execute any code we want in this constructor function eg;
+    console.log(`Thanks for opening an account, ${owner}`);
+  }
+  // These methods are our Public interface to our object API
+  deposit(value) {
+    this.movements.push(value);
+  }
+
+  withdrawal(value) {
+    this.deposit(-value); // we are calling the method deposit() inside another method
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+console.log(acc1);
+
+// For making deposits and withdrawals we can use the following:
+// acc1.movements.push(250); // for deposits
+// acc1.movements.push(-140); // for withdrawals
+// console.log(acc1);
+
+// However, it is better not to do this, and instead, create methods inside the constructor to call- see above deposit() and withdrawal() methods like so:
+acc1.deposit(250);
+acc1.withdrawal(140); // we abstracted away the negative above
+console.log(acc1);
+
+// So the methods deposit() and withdrawal() are an interface to our objects aka API
+// Certain methods and data should not be accessable outside the object, as it can create bugs so we need protected properties aka encapsulation.
