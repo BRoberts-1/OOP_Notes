@@ -593,39 +593,57 @@ jay.calcAge();
 /////////////////////////
 // Section 222 - Another Class Example
 class Account {
+  // Public fields(go to all instances, not prototypes):
+  // Public fields are also referenced by the 'this' keyword
+
+  locale = navigator.language;
+
+  // Private fields use the # symbol before them
+  #movements = [];
+  #pin;
+
   constructor(owner, currency, pin) {
     this.owner = owner;
     this.currency = currency;
-    this._pin = pin;
+    this.#pin = pin;
     // we can add any property or inputs we want without basing it on anything else e.g.:
     // Protected property has an underscore in front as a convention
-    this._movements = [];
-    this.locale = navigator.language;
+    this.#movements = [];
+    // this.locale = navigator.language;
     // can execute any code we want in this constructor function eg;
     console.log(`Thanks for opening an account, ${owner}`);
   }
   // These methods are our Public interface to our object API
+  // ie Public Methods:
   getMovements() {
-    return this._movements;
+    return this.#movements;
   }
 
   deposit(value) {
-    this._movements.push(value);
+    this.#movements.push(value);
   }
 
   withdrawal(value) {
     this.deposit(-value); // we are calling the method deposit() inside another method
   }
 
-  _approveLoan(value) {
-    return true;
-  }
+  // _approveLoan(value) {
+  //   return true;
+  // }
 
   requestLoan(value) {
-    if (this.approveLoan(value)) {
+    if (this.#approveLoan(value)) {
       this.deposit(value);
       console.log(`Loan approved.`);
     }
+  }
+
+  static helper() {
+    console.log('Helper');
+  }
+  // Private Methods
+  #approveLoan(value) {
+    return true;
   }
 }
 
@@ -641,10 +659,12 @@ console.log(acc1);
 acc1.deposit(250);
 acc1.withdrawal(140); // we abstracted away the negative above
 acc1.requestLoan(1000);
-acc1.approveLoan(1000);
+// acc1.#approveLoan(1000);
 
 console.log(acc1);
 console.log(acc1.pin);
+
+Account.helper();
 
 // So the methods deposit() and withdrawal() are an interface to our objects aka API
 // Certain methods and data should not be accessable outside the object, as it can create bugs so we need protected properties aka encapsulation.
@@ -665,3 +685,23 @@ console.log(acc1.getMovements()); // this allows to get without setting ie overr
 
 // We should also make protected the pin number, so this._pin = pin
 // And also protect the approveLoan() method. See above _approveLoan
+
+////////////////////////////////////
+// Section 224 - Encapsulation: Private Class Fields and Methods
+
+// In OOP languages like Java and C++, properties are called "fields"
+// There are four types of fields and methods ie public/private(2) fields and public/private(2) methods.
+
+// Public fields(ie properties) will be present on all the instances, but not on the prototype, of the class which are created. So, locale and movements-see above to see how they are added as public fields.
+
+// Private fields use a # symbol before them:
+// console.log(acc1.#movements); // error: not accessable outside of class, reference to undeclared private field or method #movements
+
+// For pin field, we cannot define it inside of the constructor, so what we have to do create #pin field outside and don't set to anything, and then let it be defined inside the constructor function.(like creating an empty variable). After we do this #pin; then it can no longer be accessed outside.
+
+// Private methods are very useful in hiding the implementation details from the outside.
+
+// There are also static versions of these public and private methods and fields
+
+// We have used static before as a helper() function see above.
+// We will not go over them, but you can check yourself.
