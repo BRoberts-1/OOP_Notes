@@ -705,3 +705,63 @@ console.log(acc1.getMovements()); // this allows to get without setting ie overr
 
 // We have used static before as a helper() function see above.
 // We will not go over them, but you can check yourself.
+
+//////////////////////////////////
+// Section 225 - Chaining Methods
+// Return the object itself at the end of the method we want to chain to.
+
+///////////////////////////
+// Section 226- ES6 Classes Summary
+
+// ES6 classes is probably how you will implement classes in the real world.
+
+class Talmid extends Person {
+  // using extends keyword to set up inheritance between child class 'Talmid' and parent 'Person' class. It auto sets prototype.
+  // university is a public field/property and is available on every object ie every instance created by this class
+  university = 'University of Arizona';
+  // we now have private fields(with #) which are not accessible outsid of the class. this is good for data privacy/encapsulation.
+  #studyHours = 0;
+  #course;
+  // static fields are available only on the class as well. implement like this with 'static' keyword
+  static numSubjects = 10;
+  // constructor method is called by new operator and is madatory in a regular class, but can be omitted in a child class
+  constructor(fullName, birthYear, startYear, course) {
+    // call to a parent class with the 'super' keyword-it is necessary with the 'extend' keyword and needs to happen before acessing the 'this' keyword for a child class
+    super(fullName, birthYear);
+    // instance property (available on created object)
+    this.startYear = startYear;
+    // private field here is redefined with #, we first listed above without any assignment and then here we define it with the constructor. Public fields are common to all objects while private fields are not.
+    this.#course = course;
+  }
+  // Public method
+  introduce() {
+    console.log(`I study ${this.#course} at ${this.university}`);
+  }
+  // here we are referencing a private method
+  study(hours) {
+    this.#makeCoffee();
+    this.#studyhours += hours;
+  }
+  // here is a private method, if it doesn't work in a browser, then you can just use a fake _ symbol to indicate to yourself and others to treat it as private
+  #makeCoffee() {
+    return 'Here is a coffee for you!';
+  }
+  // Getter method allows us to get a value out of an object by simply writing a property instead of writing a method. EG. we could write here with this Talmid.testScore() and get our property from object
+  get testScore() {
+    return this._testScore;
+  }
+  // Setter method(must use _ to set property with same name as method(convention), and also add getter.) The setter method allows us to define a testScore property without calling a method
+  set testScore(score) {
+    this._testScore = score < 20 ? score : 0;
+  }
+  // static method is available only on the class and cannot access instance properties or methods, only static ones
+  static printCurriculum() {
+    console.log(`There are ${this.numSubjects} subjects`);
+  }
+}
+// Creating a new object with the 'new' operator
+const talmid = new Talmid('Jonas', 2020, 2037, 'Medicine');
+
+// Classes are just dressing over real constructor functions because in JS, there are no real classes.
+// Classes are not hoisted, but they are first class citzens
+// The class body is always executed in 'strict mode'
