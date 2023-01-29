@@ -345,38 +345,38 @@ DATA CAR 1: 'Ford' going at 120 km/h
 GOOD LUCK 😀
 */
 
-class CarCl {
-  constructor(make, speed) {
-    this.make = make;
-    this.speed = speed;
-  }
+// class CarCl {
+//   constructor(make, speed) {
+//     this.make = make;
+//     this.speed = speed;
+//   }
 
-  accelerate() {
-    this.speed += 10;
-    console.log(this.speed);
-  }
+//   accelerate() {
+//     this.speed += 10;
+//     console.log(this.speed);
+//   }
 
-  brake() {
-    this.speed -= 5;
-    console.log(this.speed);
-  }
+//   brake() {
+//     this.speed -= 5;
+//     console.log(this.speed);
+//   }
 
-  get speedUS() {
-    return this.speed / 1.6;
-  }
+//   get speedUS() {
+//     return this.speed / 1.6;
+//   }
 
-  set speedUS(speed) {
-    this.speed = speed * 1.6;
-  }
-}
+//   set speedUS(speed) {
+//     this.speed = speed * 1.6;
+//   }
+// }
 
-const ford = new CarCl('Ford', 120);
-console.log(ford.speedUS); // returns: 75
-ford.accelerate();
-ford.accelerate();
-ford.brake();
-ford.speedUS = 50;
-console.log(ford); // returns: object with {make: 'Ford', speed: 80}
+// const ford = new CarCl('Ford', 120);
+// console.log(ford.speedUS); // returns: 75
+// ford.accelerate();
+// ford.accelerate();
+// ford.brake();
+// ford.speedUS = 50;
+// console.log(ford); // returns: object with {make: 'Ford', speed: 80}
 
 // Section 218 - Inheritance Between "Classes": Constuctor Functions
 
@@ -740,7 +740,7 @@ class Talmid extends Person {
   // here we are referencing a private method
   study(hours) {
     this.#makeCoffee();
-    this.#studyhours += hours;
+    this.studyhours += hours;
   }
   // here is a private method, if it doesn't work in a browser, then you can just use a fake _ symbol to indicate to yourself and others to treat it as private
   #makeCoffee() {
@@ -765,3 +765,80 @@ const talmid = new Talmid('Jonas', 2020, 2037, 'Medicine');
 // Classes are just dressing over real constructor functions because in JS, there are no real classes.
 // Classes are not hoisted, but they are first class citzens
 // The class body is always executed in 'strict mode'
+
+///////////////////////////////////////
+// Coding Challenge #4
+
+/* 
+1. Re-create challenge #3, but this time using ES6 classes: create an 'EVCl' child class of the 'CarCl' class
+2. Make the 'charge' property private;
+3. Implement the ability to chain the 'accelerate' and 'chargeBattery' methods of this class, and also update the 'brake' method in the 'CarCl' class. They experiment with chining!
+DATA CAR 1: 'Rivian' going at 120 km/h, with a charge of 23%
+*/
+class CarCl {
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+
+  accelerate() {
+    this.speed += 10;
+    console.log(`${this.make} is going at ${this.speed} km/h`);
+  }
+
+  brake() {
+    this.speed -= 5;
+    console.log(`${this.make} is going at ${this.speed} km/h`);
+    return this;
+  }
+
+  get speedUS() {
+    return this.speed / 1.6;
+  }
+
+  set speedUS(speed) {
+    this.speed = speed * 1.6;
+  }
+}
+
+class EVCl extends CarCl {
+  #charge;
+  // const EV = function
+  constructor(make, speed, charge) {
+    // Car.call
+    super(make, speed);
+    this.#charge = charge;
+  }
+
+  // Linking the prototypes together
+  // EV.prototype.
+  chargeBattery(chargeTo) {
+    this.#charge = chargeTo;
+    return this;
+  }
+
+  // EV.prototype.
+  accelerate() {
+    this.speed += 20;
+    this.#charge--;
+    console.log(
+      `${this.make} is going at ${this.speed} km/h, with a charge of ${
+        this.#charge
+      }`
+    );
+    return this; // put return this; on all the methods that set something
+  }
+}
+
+const rivian = new EVCl('Rivian', 120, 23);
+console.log(rivian);
+// console.log(rivian.#charge);
+rivian
+  .accelerate()
+  .accelerate()
+  .accelerate()
+  .brake()
+  .chargeBattery(50)
+  .accelerate();
+
+console.log(rivian.speedUS);
